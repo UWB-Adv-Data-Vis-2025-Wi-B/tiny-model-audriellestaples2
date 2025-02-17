@@ -23,4 +23,6 @@ names(crickets)
 ```
 
 
+## What is that sound?
+In this report, we examine what factors predict a cricket's chirp rate.
 
