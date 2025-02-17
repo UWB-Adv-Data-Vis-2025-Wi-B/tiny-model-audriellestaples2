@@ -48,6 +48,6 @@ temp_lm <- lm(rate ~ temp, crickets)
 
 summary.lm(temp_lm)
 ```
-Based on a scatter plot of temperature and chirping, it seems that as temperature increases, the rate of chirping also increases.
+Based on a scatter plot of temperature and chirping, it seems that as temperature increases, the rate of chirping also increases. Based on a scatter plot of temperature and chirping and a correlation test, it seems that as temperature increases one degree, the rate of chirping increases about 4.2 chirps per minute.
 
 
