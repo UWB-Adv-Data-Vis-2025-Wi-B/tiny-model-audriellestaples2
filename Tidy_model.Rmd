@@ -12,9 +12,9 @@ library('modeldata')
 ``` 
 
 
-```{r cars}
-summary(cars)
-```
+## Introduction
+
+This R Markdown document demonstrates my abilities to use models for data analysis using a data set collected on crickets.
 
 ## Including Plots
 
