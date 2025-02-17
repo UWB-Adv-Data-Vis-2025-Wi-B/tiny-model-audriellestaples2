@@ -94,3 +94,76 @@ anova(species_lm, species_x_temp_lm)
 ```
 
 After checking for interactions between temperature and species, I decided to stick with the species-specific model. While interactions were present, they didn’t significantly improve the model.
+
+## Diamonds 
+
+This R Markdown document demonstrates my abilities to use models for data analysis using a data set collected on crickets.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library('ggplot2')
+``` 
+
+```{r load data, include = FALSE}
+data("diamonds")
+names(diamonds)
+```
+
+## Diamond's Price
+
+In this report, we examine what factors predict a diamond's price.
+```{r summary, echo = FALSE}
+summary(diamonds)
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 10) + 
+  ggtitle("Distribution of Diamond Prices") +
+  xlab('Price (in USD)')
+```
+
+## Carat affects diamond price
+```{r carat and price relationship, echo = FALSE}
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of Carat vs Price") +
+  ylab('Price (in USD)') +
+  xlab('Carat')
+
+carat_lm <- lm(price ~ carat, diamonds)
+
+summary.lm(carat_lm)
+```
+From the scatter plot and linear model summary, it shows that as carat increases, the price of the diamond also increases. 
+
+## Price with Cut and Color
+```{r cut and color, echo = FALSE}
+ggplot(diamonds, aes(x = carat, y = price, color = cut)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of Carat vs Price by Cut") +
+  ylab('Price (in USD)') +
+  xlab('Carat')
+
+cut_color_lm <- lm(price ~ carat + cut + color, diamonds)
+
+summary.lm(cut_color_lm)
+```
+Using  cut and color as additional predictors helps the model for carat. The plot shows how price increases differently across cuts and colors.
+
+## Carat and Cut
+```{r cut and carat, echo = FALSE}
+
+ggplot(diamonds, aes(x = carat, y = price, color = cut)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Carat vs Price by Cut") +
+  ylab('Price (in USD)') +
+  xlab('Carat')
+
+interaction_lm <- lm(price ~ carat * cut, diamonds)
+
+summary.lm(interaction_lm)
+
+anova(carat_lm, interaction_lm)
+```
+Indicate that including  interaction between carat and cut  improves the model. Comparing two models—one predicting price based solely on carat (Model 1) and the other predicting price using both carat and its interaction with cut (Model 2)—shows a significant difference between the models (p-value < 2.2e-16). The inclusion of the interaction term provides valuable additional information for predicting diamond prices. The interaction terms, such as carat:cut.L, carat:cut.Q, carat:cut.C, and carat:cut^4, all have highly significant p-values (less than 0.001), indicating that the relationship between carat and price is influenced by the diamond's cut. This means that the effect of carat on price differs depending on the cut of the diamond, which is an important factor in pricing. The model with the interaction terms has a multiple R-squared value of 0.8591, meaning that approximately 85.91% of the variance in diamond prices can be explained by the model. This high value indicates a strong fit of the model to the data.
