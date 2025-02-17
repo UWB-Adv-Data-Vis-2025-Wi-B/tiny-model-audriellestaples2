@@ -8,7 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library('tidyverse') ; 
-library('modeldata')
+library('modeldata') ;
+library('ggplot2')
 ``` 
 
 
@@ -99,12 +100,7 @@ After checking for interactions between temperature and species, I decided to st
 
 This R Markdown document demonstrates my abilities to use models for data analysis using a data set collected on crickets.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library('ggplot2')
-``` 
-
-```{r load data, include = FALSE}
+```{r load data diamonds, include = FALSE}
 data("diamonds")
 names(diamonds)
 ```
@@ -112,7 +108,7 @@ names(diamonds)
 ## Diamond's Price
 
 In this report, we examine what factors predict a diamond's price.
-```{r summary, echo = FALSE}
+```{r summary diamonds, echo = FALSE}
 summary(diamonds)
 ggplot(diamonds, aes(x = price)) +
   geom_histogram(bins = 10) + 
