@@ -50,4 +50,21 @@ summary.lm(temp_lm)
 ```
 Based on a scatter plot of temperature and chirping, it seems that as temperature increases, the rate of chirping also increases. Based on a scatter plot of temperature and chirping and a correlation test, it seems that as temperature increases one degree, the rate of chirping increases about 4.2 chirps per minute.
 
+## Species-specific effects of temperature on chirping
+
+```{r species, echo= FALSE}
+ggplot(crickets, aes(x = temp, y = rate, color = species)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of temperature and chirp rate for two species of crickets") +
+  ylab('Chirp rate (per min.)') +
+  xlab('Temperature (Celsius)')
+
+species_lm <- lm(rate ~ temp + species, crickets)
+
+summary.lm(species_lm)
+```
+
+Using the species-specific factor improves our understanding of the relationship between temperature and chirping. By separating the data points for each species, the plot  shows two  trends, with one species having a higher starting chirp rate than the other. This indicates that the two cricket species respond differently to temperature changes. The slope for temperature is lower (3.6 chirps per minute per degree Celsius) shows that temperature still influences chirping, but the species factor accounts for a portion of the variation. The coefficient for the species variable (−10) indicates that one species, O. exclamationis, chirps 10 times more per minute than the other species, O. niveus, when temperature is held constant. Comparing the R-squared values from the two models shows that the species-specific model explains a greater portion of the variance in chirping rates (99%) compared to the general temperature-only model (92%). This suggests that including species in the model provides a more accurate and reliable prediction of chirping rates.
+
 
