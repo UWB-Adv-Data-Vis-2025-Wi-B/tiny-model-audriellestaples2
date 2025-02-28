@@ -1,0 +1,165 @@
+---
+title: "Tidy_model"
+author: "Audrielle Staples"
+date: "2025-02-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library('tidyverse') ; 
+library('modeldata') ;
+library('ggplot2')
+``` 
+
+
+## Introduction
+
+This R Markdown document demonstrates my abilities to use models for data analysis using a data set collected on crickets.
+
+
+```{r load data, include = FALSE}
+data(crickets, package = "modeldata")
+names(crickets)
+```
+
+
+## What is that sound?
+In this report, we examine what factors predict a cricket's chirp rate.
+
+```{r summary, echo = FALSE}
+summary(crickets)
+ggplot(crickets, aes(x = rate)) +
+  geom_histogram(bins = 8) + 
+  ggtitle("Distribution of the chirp rate of crickets") +
+  xlab('Chirp rate (per min.)') +
+  scale_fill_manual(values = c("blue", "red"))
+``` 
+
+## Temperature affects chirp rate
+
+```{r temp, echo= FALSE}
+ggplot(crickets, aes(x = temp, y = rate)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of temperature and chirp rate") +
+  ylab('Chirp rate (per min.)') +
+  xlab('Temperature (Celsius)')
+
+temp_lm <- lm(rate ~ temp, crickets)
+
+summary.lm(temp_lm)
+```
+Based on a scatter plot of temperature and chirping, it seems that as temperature increases, the rate of chirping also increases. Based on a scatter plot of temperature and chirping and a correlation test, it seems that as temperature increases one degree, the rate of chirping increases about 4.2 chirps per minute.
+
+## Species-specific effects of temperature on chirping
+
+```{r species, echo= FALSE}
+ggplot(crickets, aes(x = temp, y = rate, color = species)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of temperature and chirp rate for two species of crickets") +
+  ylab('Chirp rate (per min.)') +
+  xlab('Temperature (Celsius)')
+
+species_lm <- lm(rate ~ temp + species, crickets)
+
+summary.lm(species_lm)
+```
+
+Using the species-specific factor improves our understanding of the relationship between temperature and chirping. By separating the data points for each species, the plot  shows two  trends, with one species having a higher starting chirp rate than the other. This indicates that the two cricket species respond differently to temperature changes. The slope for temperature is lower (3.6 chirps per minute per degree Celsius) shows that temperature still influences chirping, but the species factor accounts for a portion of the variation. The coefficient for the species variable (−10) indicates that one species, O. exclamationis, chirps 10 times more per minute than the other species, O. niveus, when temperature is held constant. Comparing the R-squared values from the two models shows that the species-specific model explains a greater portion of the variance in chirping rates (99%) compared to the general temperature-only model (92%). This suggests that including species in the model provides a more accurate and reliable prediction of chirping rates.
+
+## Interactions
+
+```{r species historgram, echo = FALSE}
+ggplot(crickets, aes(x = rate, fill = species)) +
+  geom_histogram(position = 'identity', alpha = 0.7, bins = 8) + 
+  ggtitle("Distribution of the chirp rate of crickets") +
+  xlab('Chirp rate (per min.)')
+```
+
+The species histogram shows the distribution of temperatures for each cricket species. From this plot, we can see that the two species occupy distinct temperature zones. One species appears to prefer higher temperatures, while the other is found more frequently in cooler temperature ranges. Species have different environmental preferences, which could influence their chirping behaviors.
+
+```{r interactions, echo= FALSE}
+ggplot(crickets, aes(x = temp, y = rate, color = species)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of temperature and chirp rate for two species of crickets") +
+  ylab('Chirp rate (per min.)') +
+  xlab('Temperature (Celsius)')
+  
+species_x_temp_lm <- lm(rate ~ temp + species + temp:species, crickets) 
+summary.lm(species_x_temp_lm)
+
+anova(species_lm, species_x_temp_lm)
+```
+
+After checking for interactions between temperature and species, I decided to stick with the species-specific model. While interactions were present, they didn’t significantly improve the model.
+
+## Diamonds 
+
+This R Markdown document demonstrates my abilities to use models for data analysis using a data set collected on crickets.
+
+```{r load data diamonds, include = FALSE}
+data("diamonds")
+names(diamonds)
+```
+
+## Diamond's Price
+
+In this report, we examine what factors predict a diamond's price.
+```{r summary diamonds, echo = FALSE}
+summary(diamonds)
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 10) + 
+  ggtitle("Distribution of Diamond Prices") +
+  xlab('Price (in USD)')
+```
+
+## Carat affects diamond price
+```{r carat and price relationship, echo = FALSE}
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of Carat vs Price") +
+  ylab('Price (in USD)') +
+  xlab('Carat')
+
+carat_lm <- lm(price ~ carat, diamonds)
+
+summary.lm(carat_lm)
+```
+From the scatter plot and linear model summary, it shows that as carat increases, the price of the diamond also increases. 
+
+## Price with Cut and Color
+```{r cut and color, echo = FALSE}
+ggplot(diamonds, aes(x = carat, y = price, color = cut)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Plot of Carat vs Price by Cut") +
+  ylab('Price (in USD)') +
+  xlab('Carat')
+
+cut_color_lm <- lm(price ~ carat + cut + color, diamonds)
+
+summary.lm(cut_color_lm)
+```
+Using  cut and color as additional predictors helps the model for carat. The plot shows how price increases differently across cuts and colors.
+
+## Carat and Cut
+```{r cut and carat, echo = FALSE}
+
+ggplot(diamonds, aes(x = carat, y = price, color = cut)) +
+  geom_point() + 
+  geom_smooth(method = 'lm') +
+  ggtitle("Carat vs Price by Cut") +
+  ylab('Price (in USD)') +
+  xlab('Carat')
+
+interaction_lm <- lm(price ~ carat * cut, diamonds)
+
+summary.lm(interaction_lm)
+
+anova(carat_lm, interaction_lm)
+```
+Indicate that including  interaction between carat and cut  improves the model. Comparing two models—one predicting price based solely on carat (Model 1) and the other predicting price using both carat and its interaction with cut (Model 2)—shows a significant difference between the models (p-value < 2.2e-16). The inclusion of the interaction term provides valuable additional information for predicting diamond prices. The interaction terms, such as carat:cut.L, carat:cut.Q, carat:cut.C, and carat:cut^4, all have highly significant p-values (less than 0.001), indicating that the relationship between carat and price is influenced by the diamond's cut. This means that the effect of carat on price differs depending on the cut of the diamond, which is an important factor in pricing. The model with the interaction terms has a multiple R-squared value of 0.8591, meaning that approximately 85.91% of the variance in diamond prices can be explained by the model. This high value indicates a strong fit of the model to the data.
